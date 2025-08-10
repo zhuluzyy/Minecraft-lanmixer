@@ -3,11 +3,10 @@
 //在a.json和b.json键排列相近时使用本程序能大幅提升速度
 //输入参数:lanmixer.exe regex a.json b.json
 //文件输入:a.json b.json 输出:out.json
-//输出:{"Key":"EnvSeparatorZhv",*}
+//输出:{"Key":"EnvSEPARATORZhv",*}
 //正则匹配使用的是regex_match(),要求整个键完全匹配正则表达式
 //仅方块,物品,效果,附魔:(block|item|effect|enchantment)\.[\S\s]*
 //匹配所有:[\S\s]*
-///*const*/:常量
 
 #include <string>
 #include <iostream>
@@ -16,7 +15,9 @@
 #include <stdlib.h>
 using namespace std;
 
-const string separator=/*const*/" ";//分隔符
+//配置常量
+const string SEPARATOR=" ";//两语言间的分隔符
+const short OUTPUTINTERVAL=16;//每处理n项向控制台输出一次,提高该值有助于改善性能
 
 bool discard(ifstream &fin,const char target)//丢弃直到(丢弃target)(eof时返回true)
 {
@@ -194,7 +195,7 @@ int main(int argc,char* argv[])//0main 1regex 2a.json 3b.json
 				if(zhv!=""&&zhv!=env)//去除空值和重复值
 				{
 					//输出至终端
-					if(outn%/*const*/16==0)//每16输出一次key
+					if(outn%OUTPUTINTERVAL==0)//每16输出一次key
 					{
 						cout<<outn<<"	"<<key<<endl;//输出当前key
 					}
@@ -224,7 +225,7 @@ int main(int argc,char* argv[])//0main 1regex 2a.json 3b.json
 					{
 						out<<',';//,
 					}
-					out<<'\"'<<key<<"\":\""<<env<<separator<<zhv<<'\"';//,"Key":"EnvSeparatorZhv"
+					out<<'\"'<<key<<"\":\""<<env<<SEPARATOR<<zhv<<'\"';//,"Key":"EnvSEPARATORZhv"
 					++outn;
 				}
 			}
