@@ -41,14 +41,14 @@ lanmixer是用于制作minecraft双语资源包的有力工具.无论版本,mod,
 
 一切之前,先让你的文件资源管理器显示文件扩展名(后缀名).  
 
-首先,先搞到两个需要的语言文件.网上有很多教程,请自行查找.  
+首先,先搞到两个需要的语言文件.通常位于命名空间的lang文件夹下.  
 
-如果你有json排序器的话(vscode的插件chen86860.json-sorter也行),可以把两个文件按key排序,可以大大加快lanmixer运行速度(只需三秒钟).没有也不用特意去下载,原版文件顶多三分钟.  
+如果你有json排序器,可以把两个文件按key排序,这样能大大加快lanmixer的运行速度(只需三秒钟).没有也没必要特意去下载,原版文件顶多三分钟.  
 
 <!--已无效,该功能已支持
 用记事本(或者其他文本编辑器)打开将要混合的两个语言文件,查看是否有中文或者非ascii字符(如果看见`\u8d44\u6e90`之类的字符,那么恭喜你,这一步不用做了).如果有,将文件上传至<https://www.json.cn/unicode/>(或者任何json转义器)(拖进文本框就行),取消勾选`英文数字是否转义`,点击`中文转Unicode`,再下载.两个都如此处理(英语文件也要处理).-->  
 
-把处理好的两个语言文件放于`MinecraftBilingualResourcepack\assets\minecraft\lang`目录下.  
+把要混合的两个语言文件放于`MinecraftBilingualResourcepack\assets\minecraft\lang`目录下.  
 
 要显示在前面的语言文件重命名为`a.json`,要显示在后面的语言文件重命名为`b.json`.比如将`en_us.json`改为`a.json`,`zh_cn.json`改为`b.json`;就可以实现英文在前,中文在后的文本显示`Chicken 鸡`.  
 
@@ -57,9 +57,9 @@ lanmixer是用于制作minecraft双语资源包的有力工具.无论版本,mod,
 仅匹配方块,物品,效果,附魔:`(block|item|effect|enchantment)\.[\S\s]*`  
 匹配所有(包括菜单页面):`[\S\s]*`  
 
-如果程序提示`XXX cannot open`,那么检查两个文件的文件名是否一个为`a.json`,一个为`b.json`,并重启程序;  
+如果程序提示`XXX cannot open`,那么检查两个文件的文件名是否一个为`a.json`,一个为`b.json`,以及`out.json`是否被占用,并重启程序;  
 <!--如果程序提示`this file is unsuited for this version. enter 'no' to continue (ignore this hint), or enter any other (such as 'yes') to try using lanmixerold:`,输入`yes`并回车;-->  
-如果程序提示`the key "XXX" not found`,表明该项存在于`a.json`中但不存在于`b.json中`;  
+如果程序提示`the key "XXX" not found`,表明该项存在于`a.json`中但不存在于`b.json中`,最终文件里不会有该项;  
 如果程序提示`the end. you can close the window`,意思就是结束了可以关闭窗口;  
 
 程序结束之后,在`MinecraftBilingualResourcepack\assets\minecraft\lang`下会生成一个最终语言文件`out.json`,将其重命名为`zh_cn.json`(未匹配的项以zh_cn语言显示).  
@@ -70,23 +70,42 @@ lanmixer是用于制作minecraft双语资源包的有力工具.无论版本,mod,
 
 将整个`MinecraftBilingualResourcepack`文件夹复制到你的`.minecraft\resourcepacks`(mc资源包文件夹)下,启动minecraft,启用`MinecraftBilingualResourcepack`资源包.并保证语言为简体中文(中国大陆)  
 
-如果你打算发布自己制作的资源包的话,可以在最终语言文件中搜索`"resourcePack.title":`.如果搜不到,将`"resourcePack.title":"Select Resource Packs \u9009\u62e9\u8d44\u6e90\u5305",`(按照你使用的两个语言)粘贴进文档里(或者直接在正则表达式中选中这个键).这只是为了让用户更方便的确认资源包是否正确安装,如果正确安装,资源包选择界面会显示`Select Resource Packs 选择资源包`.也别忘了在资源包里写上`使用zhuluzyy的lanmixer创建`.  
+如果你打算发布自己制作的资源包的话,<!--可以在最终语言文件中搜索`"resourcePack.title":`.如果搜不到,将`"resourcePack.title":"Select Resource Packs \u9009\u62e9\u8d44\u6e90\u5305",`(按照你使用的两个语言)粘贴进文档里(或者直接在正则表达式中选中这个键).这只是为了让用户更方便的确认资源包是否正确安装,如果正确安装,资源包选择界面会显示`Select Resource Packs 选择资源包`.也-->别忘了在资源包里写上`使用zhuluzyy的lanmixer创建`.  
 
 最后,minecraft~启动!  
 
+### 使用命令行来进行进一步的自定义
+
+**lanmixer.exe "regex" "a.json" "b.json" "separator" "out.json"**  
+
+"regex":匹配key的正则表达式  
+"a.json":前语言文件,默认为程序目录下的a.json  
+"b.json":后语言文件,默认为程序目录下的b.json,  
+"separator":两个语言之间的分隔符,默认为空格  
+"out.json":输出文件,默认为程序目录下的out.json  
+
+如果仅指定了"a.json"但没有指定"b.json",lanmixer会把a.json中符合regex的部分提取出来,这点对于制作个性化语言包很有用处
+
+### V1.2更新内容
+
+在输出文件中包含正则表达式  
+新支持  
+- 仅提取单个语言文件中符合键的内容  
+- 自定义分隔符  
+- 自定义输出文件名  
+
 ### 程序内数据
 ```none
-lanmixer作者:zhuluzyy  
-时间240806~250206  
-在a.json和b.json键排列相近时使用lanmixer能大幅提升速度(比如两者都按字母顺序排序)  
-输入参数:lanmixer.exe regex a.json b.json  
-默认文件输入:a.json b.json 输出:out.json  
-输出:{"Key":"EnvSeparatorZhv",*}  
-正则匹配使用的是regex_match(),要求整个键完全匹配正则表达式  
-仅方块,物品,效果,附魔:(block|item|effect|enchantment)\.\[\S\s]*  
-匹配所有:[\S\s]*  
+//lanmixer作者:zhuluzyy
+//240806~251116
+//在a.json和b.json键排列相近时使用本程序能大幅提升速度
+//输入参数:lanmixer.exe regex a.json b.json separator out.json
+//文件输入:a.json b.json 输出:out.json
+//输出:{"Key":"EnvseparatorZhv",*}
+//正则匹配使用的是regex_match(),要求整个键完全匹配正则表达式
+//仅方块,物品,效果,附魔:(block|item|effect|enchantment)\.[\S\s]*
+//匹配所有:[\S\s]*
 
 //配置常量
-const string SEPARATOR=" ";//两语言间的分隔符
 const short OUTPUTINTERVAL=16;//每处理n项向控制台输出一次,提高该值有助于改善性能
 ```
